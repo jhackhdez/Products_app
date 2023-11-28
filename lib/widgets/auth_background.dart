@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AuthBackground extends StatelessWidget {
-  const AuthBackground({super.key});
+  final Widget child;
+
+  const AuthBackground({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +12,7 @@ class AuthBackground extends StatelessWidget {
       height: double.infinity,
       // Stack es un widgts que permite colocar los widgets unos encima de otros
       child: Stack(
-        children: [_PurpleBox(), _HeaderIcon()],
+        children: [_PurpleBox(), _HeaderIcon(), child],
       ),
     );
   }
