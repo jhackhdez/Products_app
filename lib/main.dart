@@ -17,7 +17,10 @@ class MyApp extends StatelessWidget {
           'home': (_) => const HomeScreen()
         },
         // Se define color gris del scaffold (resto de la pantalla que no es purple)
-        theme: ThemeData.light()
-            .copyWith(scaffoldBackgroundColor: Colors.grey[300]));
+        theme: ThemeData.light().copyWith(
+            scaffoldBackgroundColor: Colors.grey[300],
+            appBarTheme: const AppBarTheme(elevation: 0, color: Colors.indigo),
+            floatingActionButtonTheme: const FloatingActionButtonThemeData(
+                backgroundColor: Colors.indigo, elevation: 0)));
   }
 }
