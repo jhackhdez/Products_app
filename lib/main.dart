@@ -14,7 +14,8 @@ class MyApp extends StatelessWidget {
         initialRoute: 'home',
         routes: {
           'login': (_) => const LoginScreen(),
-          'home': (_) => const HomeScreen()
+          'home': (_) => const HomeScreen(),
+          'product': (_) => const ProductScreen()
         },
         // Se define color gris del scaffold (resto de la pantalla que no es purple)
         theme: ThemeData.light().copyWith(

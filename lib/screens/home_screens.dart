@@ -13,7 +13,11 @@ class HomeScreen extends StatelessWidget {
       // ListView.builder crea widget de fora perezosa, solo cuando van a entrar en pantalla y no los mantiene creados todo el tiempo
       body: ListView.builder(
           itemCount: 10,
-          itemBuilder: ((context, index) => const ProductCard())),
+          itemBuilder: ((context, index) =>
+              // GestureDetector: Permite agregar acción al hacer clic encima del widget hijo
+              GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, 'product'),
+                  child: const ProductCard()))),
       floatingActionButton:
           FloatingActionButton(child: const Icon(Icons.add), onPressed: () {}),
     );
