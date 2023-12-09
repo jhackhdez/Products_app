@@ -1,4 +1,6 @@
+import 'package:products_app/services/services.dart';
 import 'package:products_app/ui/input_decorations.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ class ProductScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productService = Provider.of<ProductsService>(context);
     return Scaffold(
       // SingleChildScrollView: Permite dejar hacer scroll para evitar que se tapen los inputs
       body: SingleChildScrollView(
@@ -15,7 +18,7 @@ class ProductScreen extends StatelessWidget {
           children: [
             Stack(
               children: [
-                ProductImage(),
+                ProductImage(url: productService.selectedProduct?.picture),
                 // Positioned: Permite ubicar widget en lugares específicos dentro del Stack
                 Positioned(
                     top: 60,

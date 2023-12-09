@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:products_app/models/models.dart';
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({super.key});
+  final Product product;
+
+  const ProductCard({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -15,20 +18,23 @@ class ProductCard extends StatelessWidget {
         child: Stack(
           alignment: Alignment.bottomLeft,
           children: [
-            _BackgroundImage(),
-            _ProductDetails(),
+            _BackgroundImage(product.picture),
+            _ProductDetails(
+              title: product.name,
+              subTitle: product.id!,
+            ),
             // Permite ubicar al child en el lugar que se desee
             Positioned(
               top: 0,
               right: 0,
-              child: _PriceTag(),
+              child: _PriceTag(product.price),
             ),
-            // TODO: Mostrar de manera condicional
-            Positioned(
-              top: 0,
-              left: 0,
-              child: _NotAvailable(),
-            )
+            if (!product.available)
+              Positioned(
+                top: 0,
+                left: 0,
+                child: _NotAvailable(),
+              )
           ],
         ),
       ),
@@ -69,6 +75,9 @@ class _NotAvailable extends StatelessWidget {
 }
 
 class _PriceTag extends StatelessWidget {
+  final double price;
+
+  const _PriceTag(this.price);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -80,14 +89,15 @@ class _PriceTag extends StatelessWidget {
           borderRadius: BorderRadius.only(
               topRight: Radius.circular(25), bottomLeft: Radius.circular(25))),
       // FittedBox: Permite adaptar el widget interno
-      child: const FittedBox(
+      child: FittedBox(
         // Permite centrar el texto
         fit: BoxFit.contain,
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(
-            '\$117.99',
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            // 1er $ para escapar y 2do para añadir variable
+            '\$$price',
+            style: const TextStyle(color: Colors.white, fontSize: 20),
           ),
         ),
       ),
@@ -96,6 +106,11 @@ class _PriceTag extends StatelessWidget {
 }
 
 class _ProductDetails extends StatelessWidget {
+  final String title;
+  final String subTitle;
+
+  const _ProductDetails({required this.title, required this.subTitle});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -105,13 +120,13 @@ class _ProductDetails extends StatelessWidget {
         width: double.infinity,
         height: 70,
         decoration: _buildBoxDecoration(),
-        child: const Column(
+        child: Column(
           // crossAxisAlignment: Alinea elemnetos dentro de la columna horizontal
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Disco duro G',
-              style: TextStyle(
+              title,
+              style: const TextStyle(
                   fontSize: 20,
                   color: Colors.white,
                   fontWeight: FontWeight.bold),
@@ -119,8 +134,8 @@ class _ProductDetails extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             Text(
-              'Id del disco duro',
-              style: TextStyle(fontSize: 15, color: Colors.white),
+              subTitle,
+              style: const TextStyle(fontSize: 15, color: Colors.white),
             )
           ],
         ),
@@ -135,6 +150,9 @@ class _ProductDetails extends StatelessWidget {
 }
 
 class _BackgroundImage extends StatelessWidget {
+  final String? url;
+
+  const _BackgroundImage(this.url);
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -143,13 +161,19 @@ class _BackgroundImage extends StatelessWidget {
         width: double.infinity,
         height: 400,
         color: Colors.red,
-        // FadeInImage: Permite mostrar un placeholder que es la imagen cuando se carga
-        child: const FadeInImage(
-          placeholder: AssetImage('jar-loading.gif'),
-          image: NetworkImage("https://via.placeholder.com/400x300/f6f6f6"),
-          // fit: permite expandir la imagen en toda la card
-          fit: BoxFit.cover,
-        ),
+        child: url == null
+            ? const Image(
+                image: AssetImage('assets/no-image.png'),
+                fit: BoxFit.cover,
+              )
+            // FadeInImage: Permite mostrar un placeholder que es la imagen cuando se carga
+            : FadeInImage(
+                // TODO: Fix productos cuando no hay imagen
+                placeholder: const AssetImage('assets/jar-loading.gif'),
+                image: NetworkImage(url!),
+                // fit: permite expandir la imagen en toda la card
+                fit: BoxFit.cover,
+              ),
       ),
     );
   }
