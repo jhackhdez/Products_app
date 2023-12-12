@@ -11,6 +11,7 @@ class ProductsService extends ChangeNotifier {
   // late: indica que se utilizará la variable cuando se tenga un valor de la misma
   Product? selectedProduct;
   bool isLoading = true;
+  bool isSaving = false;
 
   ProductsService() {
     loadProducts();
@@ -37,5 +38,34 @@ class ProductsService extends ChangeNotifier {
     notifyListeners();
 
     return products;
+  }
+
+  Future saveOrCreateProduct(Product product) async {
+    isSaving = true;
+    notifyListeners();
+
+    if (product.id == null) {
+      // Es necesario crear
+    } else {
+      // Actualizar
+      await updateProduct(product);
+    }
+
+    isSaving = false;
+    notifyListeners();
+  }
+
+  Future<String> updateProduct(Product product) async {
+    // Lógica para hacer put a Firebase
+    final url = Uri.https(_baseUrl, 'products/${product.id}.json');
+    final resp = await http.put(url, body: product.toRawJson());
+    final decodeData = resp.body;
+    print(decodeData);
+
+    // indexWhere: loop que devuelve índice de elemento en una lista para actualizar listado de productos
+    final index = products.indexWhere((element) => element.id == product.id);
+    products[index] = product;
+
+    return product.id!;
   }
 }

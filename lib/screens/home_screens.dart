@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Productos'),
       ),
-      // ListView.builder crea widget de fora perezosa, solo cuando van a entrar en pantalla y no los mantiene creados todo el tiempo
+      // ListView.builder crea widget de forma perezosa, solo cuando van a entrar en pantalla y no los mantiene creados todo el tiempo
       body: ListView.builder(
           itemCount: productsService.products.length,
           itemBuilder: ((context, index) =>

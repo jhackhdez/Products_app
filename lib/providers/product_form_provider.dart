@@ -16,6 +16,10 @@ class ProductFormProvider extends ChangeNotifier {
   }
 
   bool isValidForm() {
+    print(product?.name);
+    print(product?.price);
+    print(product?.available);
+
     // Si regresa null entonces se retorna false
     return formKey.currentState?.validate() ?? false;
   }
