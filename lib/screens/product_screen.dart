@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+import 'package:products_app/providers/product_form_provider.dart';
 import 'package:products_app/services/services.dart';
 import 'package:products_app/ui/input_decorations.dart';
 import 'package:provider/provider.dart';
@@ -11,9 +13,27 @@ class ProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productService = Provider.of<ProductsService>(context);
+    return ChangeNotifierProvider(
+      create: (_) => ProductFormProvider(productService.selectedProduct),
+      child: _ProductScreenBody(productService: productService),
+    );
+  }
+}
+
+class _ProductScreenBody extends StatelessWidget {
+  const _ProductScreenBody({
+    required this.productService,
+  });
+
+  final ProductsService productService;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       // SingleChildScrollView: Permite dejar hacer scroll para evitar que se tapen los inputs
       body: SingleChildScrollView(
+        // Al hacer scroll se oculta el teclado
+        // keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Column(
           children: [
             Stack(
@@ -65,6 +85,8 @@ class ProductScreen extends StatelessWidget {
 class _ProductForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final productForm = Provider.of<ProductFormProvider>(context);
+    final product = productForm.product;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
@@ -78,24 +100,43 @@ class _ProductForm extends StatelessWidget {
               height: 10,
             ),
             TextFormField(
+                initialValue: product!.name,
+                onChanged: (value) => product.name = value,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'El nombre es obligatorio';
+                  }
+                },
                 decoration: InputDecorations.authInputDecoration(
                     hintText: 'Nombre del producto', labelText: 'Nombre:')),
             const SizedBox(
               height: 30,
             ),
             TextFormField(
+                // Esta conversión se hace porque las cajas de texto aceptan string, no números como es el caso de Price
+                initialValue: '${product.price}',
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(
+                      RegExp(r'^(\d+)?\.?\d{0,2}'))
+                ],
+                onChanged: (value) {
+                  // Se pregunta si se puede parsear el valor entrado a entero
+                  if (double.tryParse(value) == null) {
+                    product.price = 0;
+                  } else {
+                    product.price = double.parse(value);
+                  }
+                },
                 // Esto garantiza que se muestre el teclado numérico
                 keyboardType: TextInputType.number,
                 decoration: InputDecorations.authInputDecoration(
                     hintText: '\$150', labelText: 'Precio:')),
             const SizedBox(height: 30),
             SwitchListTile(
-                value: true,
+                value: product.available,
                 title: const Text('Disponible'),
                 activeColor: Colors.indigo,
-                onChanged: (value) {
-                  // TODO: Pendiente
-                }),
+                onChanged: (value) => productForm.updateAvailability(value)),
             const SizedBox(
               height: 30,
             )
