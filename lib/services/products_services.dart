@@ -43,14 +43,13 @@ class ProductsService extends ChangeNotifier {
   Future saveOrCreateProduct(Product product) async {
     isSaving = true;
     notifyListeners();
-
     if (product.id == null) {
       // Es necesario crear
+      await createProduct(product);
     } else {
       // Actualizar
       await updateProduct(product);
     }
-
     isSaving = false;
     notifyListeners();
   }
@@ -60,11 +59,24 @@ class ProductsService extends ChangeNotifier {
     final url = Uri.https(_baseUrl, 'products/${product.id}.json');
     final resp = await http.put(url, body: product.toRawJson());
     final decodeData = resp.body;
-    print(decodeData);
 
     // indexWhere: loop que devuelve índice de elemento en una lista para actualizar listado de productos
     final index = products.indexWhere((element) => element.id == product.id);
     products[index] = product;
+
+    return product.id!;
+  }
+
+  Future<String> createProduct(Product product) async {
+    // Lógica para hacer put a Firebase
+    final url = Uri.https(_baseUrl, 'products.json');
+    final resp = await http.post(url, body: product.toRawJson());
+    final decodeData = json.decode(resp.body);
+
+    product.id = decodeData['name'];
+
+    // Añadimos el producto creado a la lista
+    products.add(product);
 
     return product.id!;
   }
