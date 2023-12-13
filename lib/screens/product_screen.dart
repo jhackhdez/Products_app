@@ -1,11 +1,11 @@
+import '../widgets/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:products_app/providers/product_form_provider.dart';
 import 'package:products_app/services/services.dart';
 import 'package:products_app/ui/input_decorations.dart';
 import 'package:provider/provider.dart';
-
-import '../widgets/widgets.dart';
-import 'package:flutter/material.dart';
 
 class ProductScreen extends StatelessWidget {
   const ProductScreen({Key? key}) : super(key: key);
@@ -58,8 +58,19 @@ class _ProductScreenBody extends StatelessWidget {
                     right: 30,
                     child: IconButton(
                         // De esta forma salimos de la pantalla
-                        onPressed: () {
-                          // TODO Cámara o Galería
+                        onPressed: () async {
+                          // Implementación para funcionamiento de la cámara
+                          final picker = ImagePicker();
+                          // Nueva forma de utilizar el api (doc: https://pub.dev/packages/image_picker)
+                          final XFile? pickedFile = await picker.pickImage(
+                              // Acá se puede seleccionar la Galería de esta forma: ImageSource.gallery
+                              source: ImageSource.camera,
+                              imageQuality: 100);
+                          if (pickedFile == null) {
+                            return;
+                          }
+                          productService
+                              .updateSelectedProductImage(pickedFile.path);
                         },
                         icon: const Icon(
                           Icons.camera_alt_outlined,
