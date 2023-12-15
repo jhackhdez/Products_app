@@ -89,4 +89,41 @@ class ProductsService extends ChangeNotifier {
     newPictureFile = File.fromUri(Uri(path: path));
     notifyListeners();
   }
+
+  Future<String?> uploadImage() async {
+    // Como medida de seguridad se asegura que exista una imagen a la hora de subirla
+    if (newPictureFile == null) return null;
+
+    isSaving = true;
+    notifyListeners();
+
+    final url = Uri.parse(
+        'https://api.cloudinary.com/v1_1/dmzjmqksn/image/upload?upload_preset=q5i3ggfo');
+
+    // Crear request y asignar imagen al file (este file es el que cargamos en el postman)
+    final imageUploadRequest = http.MultipartRequest('POST', url);
+
+    // Adjunto el archivo
+    final file =
+        await http.MultipartFile.fromPath('file', newPictureFile!.path);
+
+    // Se adjunta file a request
+    imageUploadRequest.files.add(file);
+
+    // Se dispara la petición
+    final streamResponse = await imageUploadRequest.send();
+    final resp = await http.Response.fromStream(streamResponse);
+
+    if (resp.statusCode != 200 && resp.statusCode != 201) {
+      print('Algo salió mal');
+      print(resp.body);
+      return null;
+    }
+
+    // Seteo newPictureFile para indicar que ya está subida la imagen
+    newPictureFile = null;
+
+    final decodeData = jsonDecode(resp.body);
+    return decodeData['secure_url'];
+  }
 }

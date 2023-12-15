@@ -87,14 +87,28 @@ class _ProductScreenBody extends StatelessWidget {
       // floatingActionButtonLocation: permite desplazar el botón para lograr animación
       // floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            // TODO: Guardar producto
-            if (!productForm.isValidForm()) return;
+          // Si es true el nulla no permite hacer clic en el botón
+          onPressed: productService.isSaving
+              ? null
+              : () async {
+                  // TODO: Guardar producto
+                  if (!productForm.isValidForm()) return;
 
-            // Si el form es valid
-            await productService.saveOrCreateProduct(productForm.product!);
-          },
-          child: const Icon(Icons.save_outlined)),
+                  // Carga de la imagen del producto
+                  final String? imageUrl = await productService.uploadImage();
+
+                  if (imageUrl != null) productForm.product!.picture = imageUrl;
+
+                  // Si el form es valid
+                  await productService
+                      .saveOrCreateProduct(productForm.product!);
+                },
+          child: productService.isSaving
+              // CircularProgressIndicator dibuja un loading
+              ? const CircularProgressIndicator(
+                  color: Colors.white,
+                )
+              : const Icon(Icons.save_outlined)),
     );
   }
 }
