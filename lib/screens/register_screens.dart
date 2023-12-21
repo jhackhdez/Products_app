@@ -4,8 +4,8 @@ import 'package:products_app/ui/input_decorations.dart';
 import 'package:products_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,8 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Text('Login', style: Theme.of(context).textTheme.headlineMedium),
+              Text('Crear cuenta',
+                  style: Theme.of(context).textTheme.headlineMedium),
               const SizedBox(height: 30),
               ChangeNotifierProvider(
                 // Se crea instancia de LoginFormProvider
@@ -34,15 +35,14 @@ class LoginScreen extends StatelessWidget {
           )),
           const SizedBox(height: 50),
           TextButton(
-            onPressed: () =>
-                // pushReplacementNamed: me destruye stack de pantallas anteriores, no permite regresar a pantalla anterior
-                Navigator.pushReplacementNamed(context, 'register'),
+            // pushReplacementNamed: me destruye stack de pantallas anteriores, no permite regresar a pantalla anterior
+            onPressed: () => Navigator.pushReplacementNamed(context, 'login'),
             style: ButtonStyle(
                 shape: const MaterialStatePropertyAll(StadiumBorder()),
                 overlayColor:
                     MaterialStateProperty.all(Colors.indigo.withOpacity(0.1))),
             child: const Text(
-              'Crear una nueva cuenta',
+              '¿Ya tienes una cuenta?',
               style: TextStyle(fontSize: 18, color: Colors.black87),
             ),
           ),
