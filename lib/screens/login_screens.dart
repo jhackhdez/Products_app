@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:products_app/providers/login_form_provider.dart';
+import 'package:products_app/services/services.dart';
 import 'package:products_app/ui/input_decorations.dart';
 import 'package:products_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -115,18 +116,28 @@ class _LoginForm extends StatelessWidget {
                     : () async {
                         // Oculta el teclado al hacer onPress
                         FocusScope.of(context).unfocus();
+                        // Dentro de un método la propiedad "listen" siempre se pone en false
+                        final authService =
+                            Provider.of<AuthService>(context, listen: false);
                         // Se verifica que el form sea válido
                         if (!loginForm.isValidForm()) return;
                         // Se setea el valor de _isLoading en true
                         loginForm.isLoading = true;
                         // Se esperan 2 segundos
-                        await Future.delayed(const Duration(seconds: 2));
+                        // await Future.delayed(const Duration(seconds: 2));
                         // Se setea el valor de _isLoading en false. De esta form ase simula el consumo de un api en el login
                         // TODO: Validar si el login es correcto
-                        loginForm.isLoading = false;
-                        // Redirecciona a la ruta especificada
-                        // ignore: use_build_context_synchronously
-                        Navigator.pushReplacementNamed(context, 'home');
+                        final String? errorMessage = await authService.login(
+                            loginForm.email, loginForm.password);
+                        if (errorMessage == null) {
+                          // Redirecciona a la ruta especificada
+                          // ignore: use_build_context_synchronously
+                          Navigator.pushReplacementNamed(context, 'home');
+                        } else {
+                          // TODO: Mostrar error en pantalla
+                          print(errorMessage);
+                          loginForm.isLoading = false;
+                        }
                       },
                 child: Container(
                   padding:

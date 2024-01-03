@@ -30,12 +30,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Material App',
-        initialRoute: 'login',
+        initialRoute: 'checking',
         routes: {
-          'login': (_) => const LoginScreen(),
-          'register': (_) => const RegisterScreen(),
+          'checking': (_) => const CheckAuthScreen(),
           'home': (_) => const HomeScreen(),
-          'product': (_) => const ProductScreen()
+          'login': (_) => const LoginScreen(),
+          'product': (_) => const ProductScreen(),
+          'register': (_) => const RegisterScreen()
         },
         // Se define color gris del scaffold (resto de la pantalla que no es purple)
         theme: ThemeData.light().copyWith(
