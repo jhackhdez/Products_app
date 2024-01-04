@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:products_app/models/models.dart';
 import 'package:products_app/screens/screens.dart';
@@ -11,11 +13,22 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productsService = Provider.of<ProductsService>(context);
+    final authService = Provider.of<AuthService>(context, listen: false);
     if (productsService.isLoading) return const LoadingScreenScreen();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Productos'),
-      ),
+      // leading: colocaría btn a la izquierda
+      // actions: de define como un listado y lo coloca a la derecha
+      appBar: AppBar(title: const Text('Productos'), actions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: IconButton(
+              onPressed: () {
+                authService.logout();
+                Navigator.pushReplacementNamed(context, 'login');
+              },
+              icon: const Icon(Icons.login_outlined)),
+        ),
+      ]),
       // ListView.builder crea widget de forma perezosa, solo cuando van a entrar en pantalla y no los mantiene creados todo el tiempo
       body: ListView.builder(
           itemCount: productsService.products.length,
