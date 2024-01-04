@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:products_app/models/models.dart';
 import 'package:products_app/screens/screens.dart';

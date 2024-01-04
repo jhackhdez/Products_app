@@ -38,6 +38,8 @@ class MyApp extends StatelessWidget {
           'product': (_) => const ProductScreen(),
           'register': (_) => const RegisterScreen()
         },
+        // Se llama a propiedad estática para tener acceso a en cualquier parte de la app
+        scaffoldMessengerKey: NotificationsService.messengerKey,
         // Se define color gris del scaffold (resto de la pantalla que no es purple)
         theme: ThemeData.light().copyWith(
             scaffoldBackgroundColor: Colors.grey[300],
